@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<!-- Name: Zixi Zhong -->
+<head>
+<link rel="stylesheet" type="text/css" href="bestreads.css" />
+<title>Best Reads</title>
+</head>
+<body onload="showAll()">
+
+<div id="header">
+<div>
+	<span>bestreads</span>
+</div>
+<span id="back" onclick="showAll()">home</span>
+</div>
+
+<div id="allImages"></div>
+
+
+<script>
+var imageWall = document.getElementById("allImages");
+function showAll() {
+	var ajax = new XMLHttpRequest();
+
+	ajax.open("GET","bestreads.php?command=getAll");
+	ajax.send();
+	ajax.onreadystatechange = function(){
+		imageWall.innerHTML = '';
+		if(ajax.readyState ==4 && ajax.status ==200){
+			var array= JSON.parse(ajax.responseText);
+			for (i=0; i<array.length;i++){
+				var imgSrc = array[i]+'/cover.jpg';
+				
+				imageWall.innerHTML+='<input type="image" src="'+imgSrc+'" alt="aaa" class="onebook"'+
+					' value="'+array[i]+'" onclick=eventHandler(this)>';
+
+			}		
+			}
+		};
+	}
+	
+function eventHandler(t){
+	var selected = t.value;
+	var ajax = new XMLHttpRequest();
+	
+	ajax.open("GET", "bestreads.php?command="+selected, true);
+	ajax.send();
+	ajax.onreadystatechange = function(){
+		if(ajax.readyState ==4 && ajax.status ==200){
+			var content= JSON.parse(ajax.responseText);
+			imageWall.innerHTML = content;
+		}
+	}
+	
+	
+}
+</script>
+
+</body>
+</html>
